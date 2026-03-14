@@ -1,0 +1,9 @@
+{
+  "name": "FluxBoard",
+  "short_name": "FluxBoard",
+  "description": "Kanban-style task board",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0EA5E9"
+}
