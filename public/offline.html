@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/dashboard.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0EA5E9" />
+    <title>Offline – FluxBoard</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #f0f4f8;
+        color: #1a1a2e;
+      }
+      .card {
+        text-align: center;
+        padding: 2rem;
+        max-width: 24rem;
+      }
+      .icon {
+        width: 4rem;
+        height: 4rem;
+        margin: 0 auto 1rem;
+        background: #0EA5E9;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .icon svg {
+        width: 2rem;
+        height: 2rem;
+        stroke: white;
+      }
+      h1 { font-size: 1.25rem; margin: 0 0 0.5rem; }
+      p { color: #64748b; margin: 0 0 1rem; }
+      button {
+        background: #0EA5E9;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        cursor: pointer;
+      }
+      button:hover { opacity: 0.9; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636a9 9 0 0 1 0 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 0 1 0 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 0 1-1.414-2.83m-1.414 5.658a9 9 0 0 1-2.167-9.238m7.824 2.167a1 1 0 1 1 1.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414" />
+        </svg>
+      </div>
+      <h1>You're offline</h1>
+      <p>This page wasn't available in the cache. Check your connection and try again.</p>
+      <button type="button" onclick="window.location.reload()">Retry</button>
+    </div>
+  </body>
+</html>

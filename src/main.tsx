@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import { registerServiceWorker } from './pwa/registerServiceWorker'
 
 const rootEl = document.getElementById('root')
 if (rootEl) {
@@ -10,4 +11,5 @@ if (rootEl) {
       <App />
     </StrictMode>,
   )
+  void registerServiceWorker()
 }
