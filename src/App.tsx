@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { OfflineBanner } from './components/OfflineBanner/OfflineBanner'
 import './App.css'
 
 function App() {
@@ -72,6 +73,7 @@ function App() {
 
       <div className="ticks"></div>
       <section id="spacer"></section>
+      <OfflineBanner />
     </>
   )
 }
