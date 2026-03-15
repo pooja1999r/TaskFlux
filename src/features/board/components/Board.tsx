@@ -1,48 +1,36 @@
-import { useContext, useRef } from 'react'
+import { useContext, useMemo, useRef } from 'react'
 import { BoardContext } from '../state/BoardContext.tsx'
 import { Column } from './Column.tsx'
-import type { DragMeta } from '../state/boardTypes.ts'
+import { Header } from './Header.tsx'
+import { COLUMNS } from '../state/boardTypes.ts'
+import type { DragMeta, Task } from '../state/boardTypes.ts'
 import { useTaskFilters } from '../hooks/useTaskFilters.ts'
-import { useUndoRedo } from '../hooks/useUndoRedo.ts'
 import { initialState } from '../state/initialState.ts'
-import type { BoardAction } from '../state/boardActions.ts'
-
-const noopDispatch: React.Dispatch<BoardAction> = () => undefined
 
 export function Board() {
   const ctx = useContext(BoardContext)
   const state = ctx?.state ?? initialState
-  const dispatch = ctx?.dispatch ?? noopDispatch
   const dragRef = useRef<DragMeta | null>(null)
-  const { canUndo, canRedo, handleUndo, handleRedo } = useUndoRedo(
-    state.history,
-    state.future,
-    dispatch,
-  )
-  const columnTasks = useTaskFilters(state.order, state.tasks, state.filters)
+  const filteredIdsByColumn = useTaskFilters(state.order, state.tasks, state.filters)
+
+  const columnTasks = useMemo(() => {
+    return COLUMNS.map((col) => {
+      const filteredIds = filteredIdsByColumn[col.status]
+      return {
+        ...col,
+        tasks: filteredIds
+          .map((id) => state.tasks[id])
+          .filter((task): task is Task => task !== undefined),
+        orderIds: state.order[col.status],
+      }
+    })
+  }, [filteredIdsByColumn, state.order, state.tasks])
 
   if (ctx === null) return null
 
   return (
     <div className="board-shell">
-      <div className="board-toolbar" role="toolbar" aria-label="Board actions">
-        <button
-          type="button"
-          className="board-toolbar__button"
-          onClick={handleUndo}
-          disabled={!canUndo}
-        >
-          Undo
-        </button>
-        <button
-          type="button"
-          className="board-toolbar__button"
-          onClick={handleRedo}
-          disabled={!canRedo}
-        >
-          Redo
-        </button>
-      </div>
+      <Header />
       <div className="board">
         {columnTasks.map((col) => (
           <Column
