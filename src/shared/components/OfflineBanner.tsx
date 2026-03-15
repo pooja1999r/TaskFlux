@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { loadOfflineIcon } from '../../utils/svgIconService'
+import { loadOfflineIcon } from '../utils/svgIconService.ts'
 
 const BANNER_ANIMATION_MS = 300
 
