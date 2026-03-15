@@ -1,8 +1,8 @@
-import { useContext, useMemo } from 'react'
+import { useContext, useMemo, useRef } from 'react'
 import { BoardContext } from '../state/BoardContext.tsx'
 import { Column } from './Column.tsx'
 import { COLUMNS } from '../state/boardTypes.ts'
-import type { Task, BoardFilters } from '../state/boardTypes.ts'
+import type { Task, BoardFilters, DragMeta } from '../state/boardTypes.ts'
 
 function getTasksForColumn(
   orderIds: string[],
@@ -27,6 +27,7 @@ export function Board() {
   if (ctx === null) return null
 
   const { state } = ctx
+  const dragRef = useRef<DragMeta | null>(null)
 
   const columnTasks = useMemo(() => {
     return COLUMNS.map((col) => ({
@@ -36,6 +37,7 @@ export function Board() {
         state.tasks,
         state.filters,
       ),
+      orderIds: state.order[col.status],
     }))
   }, [state.order, state.tasks, state.filters])
 
@@ -47,6 +49,8 @@ export function Board() {
           title={col.title}
           status={col.status}
           tasks={col.tasks}
+          orderIds={col.orderIds}
+          dragRef={dragRef}
         />
       ))}
     </div>

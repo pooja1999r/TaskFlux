@@ -1,10 +1,21 @@
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 import { type TaskCardProps, PRIORITY_COLORS } from '../state/boardTypes.ts'
 
-function TaskCardInner({ task }: TaskCardProps) {
+function TaskCardInner({ task, onDragStart }: TaskCardProps) {
   const color = PRIORITY_COLORS[task.priority]
+  const handleDragStart = useCallback(
+    (e: React.DragEvent) => {
+      onDragStart?.(e, task.id)
+    },
+    [task.id, onDragStart],
+  )
   return (
-    <div className="task-card" data-task-id={task.id}>
+    <div
+      className="task-card"
+      data-task-id={task.id}
+      draggable={!!onDragStart}
+      onDragStart={handleDragStart}
+    >
       <div
         className="task-card__priority"
         style={{ backgroundColor: color }}

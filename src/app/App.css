@@ -336,6 +336,21 @@ main {
   padding-right: var(--spacing-1);
 }
 
+/* Placeholder: size/position set via ref in handleDragOver (no re-render). */
+.column__drop-indicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0 5px; /* match .column__card-wrapper so width aligns with cards */
+  box-sizing: border-box;
+  border: 2px dotted #94a3b8;
+  border-radius: var(--spacing-2);
+  background: transparent;
+  pointer-events: none;
+  z-index: 2;
+  display: none;
+}
+
 .column__card-wrapper {
   box-sizing: border-box;
   padding: 0;

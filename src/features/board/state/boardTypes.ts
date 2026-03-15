@@ -42,6 +42,10 @@ export interface ColumnProps {
   title: string
   status: TaskStatus
   tasks: Task[]
+  /** Full order IDs for this column (used for drag/drop index in master list). */
+  orderIds: TaskId[]
+  /** Ref to store drag metadata (set on drag start, read on drop). */
+  dragRef: React.RefObject<DragMeta | null>
 }
 
 export const CARD_HEIGHT = 88
@@ -51,12 +55,23 @@ export const ITEM_HEIGHT = CARD_HEIGHT + CARD_GAP
 // TaskCard
 export interface TaskCardProps {
   task: Task
+  /** Called when native drag starts; sets drag metadata in ref. */
+  onDragStart?: (e: React.DragEvent, taskId: TaskId) => void
 }
 
 export const PRIORITY_COLORS: Record<TaskPriority, string> = {
   1: '#22c55e', // Low - green
   2: '#eab308', // Medium - yellow
   3: '#ef4444', // High - red
+}
+
+/** Drag metadata stored in ref (no re-renders). */
+export interface DragMeta {
+  taskId: TaskId
+  sourceStatus: TaskStatus
+  sourceIndex: number
+  /** DOM-only optimization: hide source card during native drag. */
+  sourceWrapperEl?: HTMLDivElement | null
 }
 
 // Board
