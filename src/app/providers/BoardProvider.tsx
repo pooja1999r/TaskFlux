@@ -5,7 +5,7 @@ import { initialState } from '../../features/board/state/initialState.ts'
 import {
   getInitialBoardState,
   useDebouncedLocalStorage,
-} from '../../features/board/state/useDebouncedLocalStorage.ts'
+} from '../../features/board/hooks/useDebouncedLocalStorage.ts'
 
 interface BoardProviderProps {
   children: ReactNode

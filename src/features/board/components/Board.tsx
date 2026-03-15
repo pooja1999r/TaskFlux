@@ -1,55 +1,27 @@
-import { useCallback, useContext, useMemo, useRef } from 'react'
+import { useContext, useRef } from 'react'
 import { BoardContext } from '../state/BoardContext.tsx'
 import { Column } from './Column.tsx'
-import { COLUMNS } from '../state/boardTypes.ts'
-import type { Task, BoardFilters, DragMeta } from '../state/boardTypes.ts'
+import type { DragMeta } from '../state/boardTypes.ts'
+import { useTaskFilters } from '../hooks/useTaskFilters.ts'
+import { useUndoRedo } from '../hooks/useUndoRedo.ts'
+import { initialState } from '../state/initialState.ts'
+import type { BoardAction } from '../state/boardActions.ts'
 
-function getTasksForColumn(
-  orderIds: string[],
-  tasks: Record<string, Task>,
-  filters: BoardFilters,
-): Task[] {
-  return orderIds
-    .map((id) => tasks[id])
-    .filter((t): t is Task => t !== undefined)
-    .filter(
-      (t) =>
-        (!filters.text ||
-          t.title.includes(filters.text) ||
-          t.description.includes(filters.text)) &&
-        (filters.priority == null || t.priority === filters.priority),
-    )
-}
+const noopDispatch: React.Dispatch<BoardAction> = () => undefined
 
 export function Board() {
   const ctx = useContext(BoardContext)
+  const state = ctx?.state ?? initialState
+  const dispatch = ctx?.dispatch ?? noopDispatch
+  const dragRef = useRef<DragMeta | null>(null)
+  const { canUndo, canRedo, handleUndo, handleRedo } = useUndoRedo(
+    state.history,
+    state.future,
+    dispatch,
+  )
+  const columnTasks = useTaskFilters(state.order, state.tasks, state.filters)
 
   if (ctx === null) return null
-
-  const { state, dispatch } = ctx
-  const dragRef = useRef<DragMeta | null>(null)
-  const canUndo = state.history.length > 0
-  const canRedo = state.future.length > 0
-
-  const handleUndo = useCallback(() => {
-    dispatch({ type: 'UNDO' })
-  }, [dispatch])
-
-  const handleRedo = useCallback(() => {
-    dispatch({ type: 'REDO' })
-  }, [dispatch])
-
-  const columnTasks = useMemo(() => {
-    return COLUMNS.map((col) => ({
-      ...col,
-      tasks: getTasksForColumn(
-        state.order[col.status],
-        state.tasks,
-        state.filters,
-      ),
-      orderIds: state.order[col.status],
-    }))
-  }, [state.order, state.tasks, state.filters])
 
   return (
     <div className="board-shell">

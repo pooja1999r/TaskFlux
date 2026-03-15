@@ -7,7 +7,7 @@ import type {
   TaskId,
   TaskPriority,
   TaskStatus,
-} from './boardTypes.ts'
+} from '../state/boardTypes.ts'
 
 const BOARD_STORAGE_KEY = 'fluxboard.board-state.v1'
 const DEBOUNCE_MS = 800
