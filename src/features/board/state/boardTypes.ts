@@ -23,7 +23,7 @@ export interface ColumnProps {
   tasks: Task[]
 }
 
-export const CARD_HEIGHT = 120
+export const CARD_HEIGHT = 88
 export const CARD_GAP = 8
 export const ITEM_HEIGHT = CARD_HEIGHT + CARD_GAP
 
