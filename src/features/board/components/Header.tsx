@@ -1,4 +1,4 @@
-import { memo, useCallback, useContext, useState } from 'react'
+import { memo, useCallback, useContext, useEffect, useState } from 'react'
 import { BoardContext } from '../state/BoardContext.tsx'
 import { initialState } from '../state/initialState.ts'
 import type { BoardAction } from '../state/boardActions.ts'
@@ -6,6 +6,10 @@ import type { TaskPriority } from '../state/boardTypes.ts'
 import { useUndoRedo } from '../hooks/useUndoRedo.ts'
 import { useTaskOperations } from '../hooks/useTaskOperations'
 import { CreateTaskModal } from './CreateTaskModal.tsx'
+import {
+  loadUndoIcon,
+  loadRedoIcon,
+} from '../../../shared/utils/svgIconService.ts'
 
 const noopDispatch: React.Dispatch<BoardAction> = () => undefined
 
@@ -22,6 +26,26 @@ function HeaderInner() {
     dispatch,
   )
   const { addTask } = useTaskOperations(dispatch)
+
+  const [undoIconUrl, setUndoIconUrl] = useState<string | null>(null)
+  const [redoIconUrl, setRedoIconUrl] = useState<string | null>(null)
+  useEffect(() => {
+    let cancelled = false
+    // Load SVG icons via service; fallback to text in UI if null
+    /* eslint-disable @typescript-eslint/no-unsafe-call */
+    void Promise.all([loadUndoIcon(), loadRedoIcon()]).then(
+      ([undo, redo]: (string | null)[]) => {
+        if (!cancelled) {
+          setUndoIconUrl(undo ?? null)
+          setRedoIconUrl(redo ?? null)
+        }
+      },
+    )
+    /* eslint-enable @typescript-eslint/no-unsafe-call */
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,16 +120,26 @@ function HeaderInner() {
             className="board-toolbar__button"
             onClick={handleUndo}
             disabled={!canUndo}
+            aria-label="Undo"
           >
-            Undo
+            {undoIconUrl ? (
+              <img src={undoIconUrl} alt="" width={16} height={16} className="board-toolbar__icon" />
+            ) : (
+              'Undo'
+            )}
           </button>
           <button
             type="button"
             className="board-toolbar__button"
             onClick={handleRedo}
             disabled={!canRedo}
+            aria-label="Redo"
           >
-            Redo
+            {redoIconUrl ? (
+              <img src={redoIconUrl} alt="" width={16} height={16} className="board-toolbar__icon" />
+            ) : (
+              'Redo'
+            )}
           </button>
           <button
             type="button"

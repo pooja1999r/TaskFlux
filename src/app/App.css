@@ -377,6 +377,11 @@ main {
   border-color: #1d4ed8;
 }
 
+.board-toolbar__icon {
+  display: block;
+  vertical-align: middle;
+}
+
 .create-task-modal__overlay {
   position: fixed;
   inset: 0;
