@@ -2,8 +2,10 @@ export type TaskStatus = 'todo' | 'in-progress' | 'done'
 
 export type TaskPriority = 1 | 2 | 3 // 1: Low, 2: Medium, 3: High
 
+export type TaskId = string
+
 export interface Task {
-  id: string
+  id: TaskId
   title: string
   description: string
   status: TaskStatus
@@ -12,8 +14,27 @@ export interface Task {
   updatedAt: number
 }
 
-export interface BoardState {
-  tasks: Task[]
+/** Column order: array of task IDs per status. */
+export type BoardOrder = Record<TaskStatus, TaskId[]>
+
+/** Snapshot for undo/redo (no history/future inside). */
+export interface BoardSnapshot {
+  tasks: Record<TaskId, Task>
+  order: BoardOrder
+}
+
+/** UI-only; not stored in history. */
+export interface BoardFilters {
+  text: string
+  priority: TaskPriority | null
+}
+
+export const MAX_HISTORY_DEPTH = 15
+
+export interface BoardState extends BoardSnapshot {
+  history: BoardSnapshot[]
+  future: BoardSnapshot[]
+  filters: BoardFilters
 }
 
 // Column
