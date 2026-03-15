@@ -1,4 +1,4 @@
-import { useContext, useMemo, useRef } from 'react'
+import { useCallback, useContext, useMemo, useRef } from 'react'
 import { BoardContext } from '../state/BoardContext.tsx'
 import { Column } from './Column.tsx'
 import { COLUMNS } from '../state/boardTypes.ts'
@@ -26,8 +26,18 @@ export function Board() {
 
   if (ctx === null) return null
 
-  const { state } = ctx
+  const { state, dispatch } = ctx
   const dragRef = useRef<DragMeta | null>(null)
+  const canUndo = state.history.length > 0
+  const canRedo = state.future.length > 0
+
+  const handleUndo = useCallback(() => {
+    dispatch({ type: 'UNDO' })
+  }, [dispatch])
+
+  const handleRedo = useCallback(() => {
+    dispatch({ type: 'REDO' })
+  }, [dispatch])
 
   const columnTasks = useMemo(() => {
     return COLUMNS.map((col) => ({
@@ -42,17 +52,37 @@ export function Board() {
   }, [state.order, state.tasks, state.filters])
 
   return (
-    <div className="board">
-      {columnTasks.map((col) => (
-        <Column
-          key={col.status}
-          title={col.title}
-          status={col.status}
-          tasks={col.tasks}
-          orderIds={col.orderIds}
-          dragRef={dragRef}
-        />
-      ))}
+    <div className="board-shell">
+      <div className="board-toolbar" role="toolbar" aria-label="Board actions">
+        <button
+          type="button"
+          className="board-toolbar__button"
+          onClick={handleUndo}
+          disabled={!canUndo}
+        >
+          Undo
+        </button>
+        <button
+          type="button"
+          className="board-toolbar__button"
+          onClick={handleRedo}
+          disabled={!canRedo}
+        >
+          Redo
+        </button>
+      </div>
+      <div className="board">
+        {columnTasks.map((col) => (
+          <Column
+            key={col.status}
+            title={col.title}
+            status={col.status}
+            tasks={col.tasks}
+            orderIds={col.orderIds}
+            dragRef={dragRef}
+          />
+        ))}
+      </div>
     </div>
   )
 }
