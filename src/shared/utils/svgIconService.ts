@@ -1,7 +1,10 @@
 /**
  * Loads SVG icons from the public folder and returns them as data URLs.
- * Call on mount; use the returned URL in img src. Fallback if load fails.
+ * After first load, stores each icon in localStorage and serves from there on
+ * subsequent visits (no network). Call on mount; use the returned URL in img src.
  */
+
+const STORAGE_PREFIX = 'fluxboard.svg.v1.'
 
 const OFFLINE_ICON_PATH = '/icons/offline.svg'
 const UNDO_ICON_PATH = '/icons/undo.svg'
@@ -13,8 +16,36 @@ const COPY_ICON_PATH = '/icons/copy.svg'
 
 const iconCache: Record<string, string | null> = {}
 
+function getStorageKey(path: string): string {
+  return `${STORAGE_PREFIX}${path}`
+}
+
+function readFromStorage(path: string): string | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const stored = window.localStorage.getItem(getStorageKey(path))
+    return stored && stored.startsWith('data:image/svg+xml,') ? stored : null
+  } catch {
+    return null
+  }
+}
+
+function writeToStorage(path: string, dataUrl: string): void {
+  if (typeof window === 'undefined') return
+  try {
+    window.localStorage.setItem(getStorageKey(path), dataUrl)
+  } catch {
+    // QuotaExceeded or disabled; ignore
+  }
+}
+
 async function loadSvgIcon(path: string): Promise<string | null> {
   if (path in iconCache) return iconCache[path] ?? null
+  const fromStorage = readFromStorage(path)
+  if (fromStorage !== null) {
+    iconCache[path] = fromStorage
+    return fromStorage
+  }
   try {
     const res = await fetch(path)
     if (!res.ok) {
@@ -24,6 +55,7 @@ async function loadSvgIcon(path: string): Promise<string | null> {
     const svgText = await res.text()
     const dataUrl = `data:image/svg+xml,${encodeURIComponent(svgText)}`
     iconCache[path] = dataUrl
+    writeToStorage(path, dataUrl)
     return dataUrl
   } catch {
     iconCache[path] = null
