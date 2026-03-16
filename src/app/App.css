@@ -681,6 +681,13 @@ main {
   opacity: 1;
 }
 
+.task-card__badge-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
 .task-card__badge {
   font-size: 12px;
   font-weight: 600;
@@ -688,6 +695,38 @@ main {
   background: #f1f5f9;
   border-radius: var(--spacing-1);
   padding: 2px 4px;
+  max-width: 80px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.task-card__copy {
+  padding: 2px;
+  border: none;
+  border-radius: var(--spacing-1);
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.task-card__copy:hover {
+  background: rgba(30, 41, 59, 0.06);
+  color: #1e293b;
+}
+
+.task-card__copy-icon {
+  width: 12px;
+  height: 12px;
+  display: block;
+  pointer-events: none;
 }
 
 .task-card__content {

@@ -8,6 +8,7 @@ import {
   loadMinusIcon,
   loadEditIcon,
   loadDragIcon,
+  loadCopyIcon,
 } from '../../../shared/utils/svgIconService.ts'
 
 function TaskCardInner({ task, onDragStart }: TaskCardProps) {
@@ -21,6 +22,7 @@ function TaskCardInner({ task, onDragStart }: TaskCardProps) {
   const [minusIconUrl, setMinusIconUrl] = useState<string | null>(null)
   const [editIconUrl, setEditIconUrl] = useState<string | null>(null)
   const [dragIconUrl, setDragIconUrl] = useState<string | null>(null)
+  const [copyIconUrl, setCopyIconUrl] = useState<string | null>(null)
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -34,12 +36,13 @@ function TaskCardInner({ task, onDragStart }: TaskCardProps) {
   useEffect(() => {
     let cancelled = false
     /* eslint-disable @typescript-eslint/no-unsafe-call */
-    void Promise.all([loadMinusIcon(), loadEditIcon(), loadDragIcon()]).then(
-      ([minus, edit, drag]: (string | null)[]) => {
+    void Promise.all([loadMinusIcon(), loadEditIcon(), loadDragIcon(), loadCopyIcon()]).then(
+      ([minus, edit, drag, copy]: (string | null)[]) => {
         if (!cancelled) {
           setMinusIconUrl(minus ?? null)
           setEditIconUrl(edit ?? null)
           setDragIconUrl(drag ?? null)
+          setCopyIconUrl(copy ?? null)
         }
       },
     )
@@ -68,6 +71,11 @@ function TaskCardInner({ task, onDragStart }: TaskCardProps) {
     e.stopPropagation()
     setIsEditModalOpen(true)
   }, [])
+
+  const handleCopyId = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    void navigator.clipboard.writeText(task.id)
+  }, [task.id])
 
   const handleEditSubmit = useCallback(
     (payload: CreateTaskModalPayload | EditTaskModalPayload) => {
@@ -130,7 +138,23 @@ function TaskCardInner({ task, onDragStart }: TaskCardProps) {
                 )}
               </button>
             </div>
-            <span className="task-card__badge">{task.id}</span>
+            <span className="task-card__badge-wrap">
+              <span className="task-card__badge" title={task.id}>
+                {task.id}
+              </span>
+              <button
+                type="button"
+                className="task-card__copy"
+                onClick={handleCopyId}
+                aria-label="Copy task ID"
+              >
+                {copyIconUrl ? (
+                  <img src={copyIconUrl} alt="" width={12} height={12} className="task-card__copy-icon" />
+                ) : (
+                  'Copy'
+                )}
+              </button>
+            </span>
           </div>
           <p className="task-card__description">{task.description}</p>
           <p className="task-card__meta">Modified {secondsAgo} seconds ago.</p>

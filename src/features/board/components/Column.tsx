@@ -16,7 +16,7 @@ import { useBoardDnD } from '../hooks/useBoardDnD.ts'
 export function Column({ title, status, tasks, orderIds, dragRef }: ColumnProps) {
   const ctx = useContext(BoardContext)
   const dispatch = ctx?.dispatch
-  const { addTaskToColumn } = useTaskOperations(dispatch ?? (() => undefined))
+  const { addTask } = useTaskOperations(dispatch ?? (() => undefined))
   const [height, setHeight] = useState(400)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
@@ -36,11 +36,10 @@ export function Column({ title, status, tasks, orderIds, dragRef }: ColumnProps)
 
   const handleCreateTask = useCallback(
     (payload: { title: string; description: string; priority: TaskPriority }) => {
-      /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
-      addTaskToColumn(status, 0, payload)
+      addTask(payload, { status, insertIndex: 0 })
       setIsAddModalOpen(false)
     },
-    [status, addTaskToColumn],
+    [status, addTask],
   )
 
   useLayoutEffect(() => {
