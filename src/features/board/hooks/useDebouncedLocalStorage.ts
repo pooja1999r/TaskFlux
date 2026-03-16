@@ -98,20 +98,29 @@ function writeBoardState(state: BoardState): void {
   }
 }
 
+/**
+ * Initial state for the board: read from localStorage if valid, otherwise use defaultState
+ * (from initial-tasks.json). Undo/redo are always reset to zero on load (history/future cleared).
+ */
 export function getInitialBoardState(defaultState: BoardState): BoardState {
-  if (typeof window === 'undefined') return defaultState
+  const zeroUndoRedo = (s: BoardState): BoardState => ({
+    ...s,
+    history: [],
+    future: [],
+  })
+  if (typeof window === 'undefined') return zeroUndoRedo(defaultState)
   try {
     const raw = window.localStorage.getItem(BOARD_STORAGE_KEY)
-    if (raw === null) return defaultState
+    if (raw === null) return zeroUndoRedo(defaultState)
     const parsed: unknown = JSON.parse(raw)
     if (!isBoardState(parsed)) {
       window.localStorage.removeItem(BOARD_STORAGE_KEY)
-      return defaultState
+      return zeroUndoRedo(defaultState)
     }
-    return parsed
+    return zeroUndoRedo(parsed)
   } catch {
     window.localStorage.removeItem(BOARD_STORAGE_KEY)
-    return defaultState
+    return zeroUndoRedo(defaultState)
   }
 }
 
