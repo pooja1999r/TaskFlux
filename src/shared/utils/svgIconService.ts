@@ -8,6 +8,7 @@ const UNDO_ICON_PATH = '/icons/undo.svg'
 const REDO_ICON_PATH = '/icons/redo.svg'
 const MINUS_ICON_PATH = '/icons/minus.svg'
 const EDIT_ICON_PATH = '/icons/edit.svg'
+const DRAG_ICON_PATH = '/icons/drag.svg'
 
 const iconCache: Record<string, string | null> = {}
 
@@ -51,4 +52,8 @@ export async function loadMinusIcon(): Promise<string | null> {
 
 export async function loadEditIcon(): Promise<string | null> {
   return loadSvgIcon(EDIT_ICON_PATH)
+}
+
+export async function loadDragIcon(): Promise<string | null> {
+  return loadSvgIcon(DRAG_ICON_PATH)
 }

@@ -7,6 +7,7 @@ import type { CreateTaskModalPayload, EditTaskModalPayload } from './CreateTaskM
 import {
   loadMinusIcon,
   loadEditIcon,
+  loadDragIcon,
 } from '../../../shared/utils/svgIconService.ts'
 
 function TaskCardInner({ task, onDragStart }: TaskCardProps) {
@@ -19,6 +20,7 @@ function TaskCardInner({ task, onDragStart }: TaskCardProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [minusIconUrl, setMinusIconUrl] = useState<string | null>(null)
   const [editIconUrl, setEditIconUrl] = useState<string | null>(null)
+  const [dragIconUrl, setDragIconUrl] = useState<string | null>(null)
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -31,14 +33,17 @@ function TaskCardInner({ task, onDragStart }: TaskCardProps) {
 
   useEffect(() => {
     let cancelled = false
-    void Promise.all([loadMinusIcon(), loadEditIcon()]).then(
-      ([minus, edit]: (string | null)[]) => {
+    /* eslint-disable @typescript-eslint/no-unsafe-call */
+    void Promise.all([loadMinusIcon(), loadEditIcon(), loadDragIcon()]).then(
+      ([minus, edit, drag]: (string | null)[]) => {
         if (!cancelled) {
           setMinusIconUrl(minus ?? null)
           setEditIconUrl(edit ?? null)
+          setDragIconUrl(drag ?? null)
         }
       },
     )
+    /* eslint-enable @typescript-eslint/no-unsafe-call */
     return () => {
       cancelled = true
     }
@@ -93,6 +98,11 @@ function TaskCardInner({ task, onDragStart }: TaskCardProps) {
         />
         <div className="task-card__content">
           <div className="task-card__header">
+            <div className="task-card__drag" aria-hidden>
+              {dragIconUrl ? (
+                <img src={dragIconUrl} alt="" width={12} height={12} className="task-card__drag-icon" />
+              ) : null}
+            </div>
             <p className="task-card__title">{task.title}</p>
             <div className="task-card__actions" aria-label="Task actions">
               <button
@@ -120,6 +130,7 @@ function TaskCardInner({ task, onDragStart }: TaskCardProps) {
                 )}
               </button>
             </div>
+            <span className="task-card__badge">{task.id}</span>
           </div>
           <p className="task-card__description">{task.description}</p>
           <p className="task-card__meta">Modified {secondsAgo} seconds ago.</p>
