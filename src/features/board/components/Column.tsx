@@ -2,23 +2,46 @@ import {
   useLayoutEffect,
   useState,
   useContext,
+  useCallback,
 } from 'react'
 import { TaskCard } from './TaskCard.tsx'
+import { CreateTaskModal } from './CreateTaskModal.tsx'
 import { useProgressiveList } from '../hooks/useProgressiveList.ts'
+import { useTaskOperations } from '../hooks/useTaskOperations.ts'
+import type { TaskPriority } from '../state/boardTypes.ts'
 import { type ColumnProps, CARD_HEIGHT, ITEM_HEIGHT } from '../state/boardTypes.ts'
 import { BoardContext } from '../state/BoardContext.tsx'
 import { useBoardDnD } from '../hooks/useBoardDnD.ts'
 
 export function Column({ title, status, tasks, orderIds, dragRef }: ColumnProps) {
   const ctx = useContext(BoardContext)
+  const dispatch = ctx?.dispatch
+  const { addTaskToColumn } = useTaskOperations(dispatch ?? (() => undefined))
   const [height, setHeight] = useState(400)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
   const { visibleItems, totalHeight, containerRef, sentinelRef } = useProgressiveList({
     items: tasks,
     itemHeight: ITEM_HEIGHT,
     containerHeight: height,
   })
-  const dispatch = ctx?.dispatch
+
+  const handleOpenAddModal = useCallback(() => {
+    setIsAddModalOpen(true)
+  }, [])
+
+  const handleCloseAddModal = useCallback(() => {
+    setIsAddModalOpen(false)
+  }, [])
+
+  const handleCreateTask = useCallback(
+    (payload: { title: string; description: string; priority: TaskPriority }) => {
+      /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
+      addTaskToColumn(status, 0, payload)
+      setIsAddModalOpen(false)
+    },
+    [status, addTaskToColumn],
+  )
 
   useLayoutEffect(() => {
     const el = containerRef.current
@@ -111,10 +134,20 @@ export function Column({ title, status, tasks, orderIds, dragRef }: ColumnProps)
             />
           </div>
         </div>
-        <button type="button" className="column__add">
+        <button
+          type="button"
+          className="column__add"
+          onClick={handleOpenAddModal}
+          aria-label={`Add a card to ${title}`}
+        >
           + Add a card
         </button>
       </div>
+      <CreateTaskModal
+        isOpen={isAddModalOpen}
+        onClose={handleCloseAddModal}
+        onSubmit={handleCreateTask}
+      />
     </div>
   )
 }

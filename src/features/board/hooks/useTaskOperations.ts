@@ -11,7 +11,10 @@ function createTaskId(): TaskId {
 
 export function useTaskOperations(dispatch: React.Dispatch<BoardAction>) {
   const addTask = useCallback(
-    (payload: { title: string; description: string; priority: TaskPriority }) => {
+    (
+      payload: { title: string; description: string; priority: TaskPriority },
+      options?: { status?: TaskStatus; insertIndex?: number },
+    ) => {
       dispatch({
         type: 'ADD_TASK',
         payload: {
@@ -19,6 +22,8 @@ export function useTaskOperations(dispatch: React.Dispatch<BoardAction>) {
           title: payload.title,
           description: payload.description,
           priority: payload.priority,
+          ...(options?.status !== undefined && { status: options.status }),
+          ...(options?.insertIndex !== undefined && { insertIndex: options.insertIndex }),
         },
       })
     },

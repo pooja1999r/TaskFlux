@@ -31,21 +31,24 @@ export function boardReducer(
 ): BoardState {
   switch (action.type) {
     case 'ADD_TASK': {
-      const { id, title, description, priority } = action.payload
+      const { id, title, description, priority, status: targetStatus, insertIndex } = action.payload
+      const status: keyof BoardState['order'] = targetStatus ?? 'todo'
       const now = Date.now()
       const task: Task = {
         id,
         title,
         description,
-        status: 'todo',
+        status,
         priority,
         createdAt: now,
         updatedAt: now,
       }
       const tasks = { ...state.tasks, [id]: task }
+      const current = state.order[status]
+      const index = insertIndex !== undefined ? Math.max(0, Math.min(insertIndex, current.length)) : current.length
       const order = {
         ...state.order,
-        todo: [...state.order.todo, id],
+        [status]: [...current.slice(0, index), id, ...current.slice(index)],
       }
       return pushHistory(state, { tasks, order })
     }

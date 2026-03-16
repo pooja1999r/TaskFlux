@@ -6,7 +6,7 @@ import type {
   BoardOrder,
 } from './boardTypes.ts'
 
-/** Create a new task; default status "todo". Pushes history, clears future. Caller must provide id (e.g. crypto.randomUUID()). */
+/** Create a new task. Pushes history, clears future. Caller must provide id. Optional status/insertIndex add to that column at index (default: todo, append). */
 export type AddTaskAction = {
   type: 'ADD_TASK'
   payload: {
@@ -14,6 +14,8 @@ export type AddTaskAction = {
     title: string
     description: string
     priority: TaskPriority
+    status?: TaskStatus
+    insertIndex?: number
   }
 }
 
