@@ -253,35 +253,47 @@
   color: var(--on-primary-container);
 }
 
-/* ----- Board (Kanban columns) ----- */
+/* ----- Board (Kanban columns): full width & height, gradient background, scroll only in lists ----- */
 main {
   flex: 1;
   min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   padding: var(--spacing-4);
+  box-sizing: border-box;
+  /* Background matching reference: lavender → light blue → pink/magenta */
   background: linear-gradient(
-    135deg,
-    #bae6fd 0%,
-    #a5f3fc 25%,
-    #ccfbf1 50%,
-    #e9d5ff 75%,
-    #f5d0fe 100%
+    to right,
+    #e9d5ff 0%,
+    #c4b5fd 18%,
+    #a5f3fc 45%,
+    #93c5fd 65%,
+    #f9a8d4 85%,
+    #fbcfe8 100%
   );
+  background-attachment: fixed;
 }
 
 .board {
   display: grid;
   grid-template-columns: repeat(3, minmax(280px, 1fr));
   gap: var(--spacing-4);
-  height: 100%;
-  min-height: 60vh;
+  flex: 1;
+  min-height: 0;
   max-width: 100%;
+  overflow: hidden;
 }
 
 .board-shell {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3);
+  width: 100%;
   height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .board-toolbar {
@@ -633,8 +645,10 @@ main {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--spacing-2);
   flex-shrink: 0;
 }
+
 .task-card__content {
   padding: var(--spacing-2) var(--spacing-3);
   flex: 1;
@@ -643,7 +657,7 @@ main {
 }
 
 .task-card__title {
-  margin: 0 0 2px;
+  margin: 0;
   font-size: var(--type-body-size);
   font-weight: 500;
   color: #1e293b;
@@ -651,6 +665,8 @@ main {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex: 1;
+  min-width: 0;
 }
 
 .task-card__description {
@@ -672,8 +688,8 @@ main {
 
 .task-card__actions {
   display: flex;
-  gap: 6px;
-  margin-top: 8px;
+  align-items: center;
+  gap: 4px;
   opacity: 0;
   transition: opacity 0.15s ease;
   flex-shrink: 0;
@@ -684,27 +700,29 @@ main {
 }
 
 .task-card__action {
-  padding: 4px 8px;
-  border: 1px solid rgba(30, 41, 59, 0.15);
+  padding: 2px;
+  border: none;
   border-radius: var(--spacing-1);
-  background: rgba(255, 255, 255, 0.9);
+  background: transparent;
   color: #475569;
-  font-size: 11px;
-  font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .task-card__action:hover {
-  background: #f1f5f9;
-  border-color: rgba(30, 41, 59, 0.25);
+  background: rgba(30, 41, 59, 0.06);
+  color: #1e293b;
 }
 
 .task-card__action-icon {
   display: block;
-  vertical-align: middle;
+  width: 12.5px;
+  height: 12.5px;
   pointer-events: none;
-  width: 12px;
+  vertical-align: middle;
 }
 
 /* Dark mode */

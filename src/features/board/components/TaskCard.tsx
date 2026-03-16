@@ -102,7 +102,7 @@ function TaskCardInner({ task, onDragStart }: TaskCardProps) {
                 aria-label="Delete task"
               >
                 {minusIconUrl ? (
-                  <img src={minusIconUrl} alt="" width={14} height={14} className="task-card__action-icon" />
+                  <img src={minusIconUrl} alt="" width={12} height={12} className="task-card__action-icon" />
                 ) : (
                   'Delete'
                 )}
@@ -114,7 +114,7 @@ function TaskCardInner({ task, onDragStart }: TaskCardProps) {
                 aria-label="Edit task"
               >
                 {editIconUrl ? (
-                  <img src={editIconUrl} alt="" width={14} height={14} className="task-card__action-icon" />
+                  <img src={editIconUrl} alt="" width={12} height={12} className="task-card__action-icon" />
                 ) : (
                   'Edit'
                 )}
