@@ -4,7 +4,7 @@ import {
   useContext,
 } from 'react'
 import { TaskCard } from './TaskCard.tsx'
-import { useVirtualList } from '../../../shared/hooks/useVirtualList.ts'
+import { useProgressiveList } from '../hooks/useProgressiveList.ts'
 import { type ColumnProps, CARD_HEIGHT, ITEM_HEIGHT } from '../state/boardTypes.ts'
 import { BoardContext } from '../state/BoardContext.tsx'
 import { useBoardDnD } from '../hooks/useBoardDnD.ts'
@@ -13,11 +13,10 @@ export function Column({ title, status, tasks, orderIds, dragRef }: ColumnProps)
   const ctx = useContext(BoardContext)
   const [height, setHeight] = useState(400)
 
-  const { visibleItems, totalHeight, containerRef } = useVirtualList({
+  const { visibleItems, totalHeight, containerRef, sentinelRef } = useProgressiveList({
     items: tasks,
     itemHeight: ITEM_HEIGHT,
     containerHeight: height,
-    overscan: 2,
   })
   const dispatch = ctx?.dispatch
 
@@ -97,6 +96,19 @@ export function Column({ title, status, tasks, orderIds, dragRef }: ColumnProps)
                 <TaskCard task={item} onDragStart={handleDragStart} />
               </div>
             ))}
+            <div
+              ref={sentinelRef}
+              className="column__sentinel"
+              aria-hidden
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: visibleItems.length * ITEM_HEIGHT,
+                height: 1,
+                pointerEvents: 'none',
+              }}
+            />
           </div>
         </div>
         <button type="button" className="column__add">

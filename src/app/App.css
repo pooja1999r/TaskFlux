@@ -570,6 +570,11 @@ main {
   padding-right: var(--spacing-1);
 }
 
+.column__sentinel {
+  visibility: hidden;
+  overflow: hidden;
+}
+
 /* Placeholder: size/position set via ref in handleDragOver (no re-render). */
 .column__drop-indicator {
   position: absolute;
