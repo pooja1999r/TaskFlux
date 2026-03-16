@@ -6,11 +6,13 @@
 const OFFLINE_ICON_PATH = '/icons/offline.svg'
 const UNDO_ICON_PATH = '/icons/undo.svg'
 const REDO_ICON_PATH = '/icons/redo.svg'
+const MINUS_ICON_PATH = '/icons/minus.svg'
+const EDIT_ICON_PATH = '/icons/edit.svg'
 
 const iconCache: Record<string, string | null> = {}
 
 async function loadSvgIcon(path: string): Promise<string | null> {
-  if (path in iconCache) return iconCache[path]
+  if (path in iconCache) return iconCache[path] ?? null
   try {
     const res = await fetch(path)
     if (!res.ok) {
@@ -41,4 +43,12 @@ export async function loadUndoIcon(): Promise<string | null> {
 
 export async function loadRedoIcon(): Promise<string | null> {
   return loadSvgIcon(REDO_ICON_PATH)
+}
+
+export async function loadMinusIcon(): Promise<string | null> {
+  return loadSvgIcon(MINUS_ICON_PATH)
+}
+
+export async function loadEditIcon(): Promise<string | null> {
+  return loadSvgIcon(EDIT_ICON_PATH)
 }
